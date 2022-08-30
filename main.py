@@ -1,5 +1,7 @@
+import matplotlib.path as mplPath
 import geopy.distance
 import pandas as pd
+import numpy as np
 
 for x in ["windows-1251", "windows-1252", "utf-8", "unicode", "ascii"]:
     try:
@@ -119,10 +121,15 @@ mkad_km =  [[1,37.842762,55.774558],
 
 
 mkad_array = list(map(lambda x: [x[2], x[1]], mkad_km))
-
+bbPath = mplPath.Path(np.array(mkad_array))
+print(bbPath)
 length_array = []
 for i in range(len(df.index)):
-    length_array.append(min(map(lambda x: geopy.distance.geodesic((x[0], x[1]), (df.iloc[i].at['lat'], df.iloc[i].at['long'])).km, mkad_array)))
+    val = min(map(lambda x: geopy.distance.geodesic((x[0], x[1]), (df.iloc[i].at['lat'], df.iloc[i].at['long'])).km, mkad_array))
+    if bbPath.contains_point((df.iloc[i].at['lat'], df.iloc[i].at['long'])):
+        length_array.append(-val)
+    else:
+        length_array.append(val)
 
 df['km'] = length_array
 

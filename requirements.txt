@@ -1,2 +1,4 @@
-geopy.distance
+matplotlib
 pandas
+geopy
+numpy
